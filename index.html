@@ -17,8 +17,8 @@
 <body class="bg-gray-50 text-gray-800 font-sans antialiased">
 
     <script>
-        // Replace this with your newly generated Google Apps Script Web App URL
-        const BACKEND_URL = "YOUR_NEW_APPS_SCRIPT_URL_HERE";
+        // Configured with your specified Google Apps Script Web App URL
+        const BACKEND_URL = "https://script.google.com/macros/s/AKfycbyDskOI3KQnjDrL6lGkxdM-UJyu3JuKO-hanDLosBzvP0J5f-zk2lEoQLi9Aj_QR_sGYQ/exec";
         const ADMIN_PASSWORD = "admin123"; 
     </script>
 
@@ -98,8 +98,8 @@
                     ⚙️ Control Panel Dashboard Management Console
                 </h2>
 
-                <!-- Task Part 1: Bulk Docx Parser Upload Box -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    <!-- Bulk Import Form -->
                     <div class="p-5 border border-gray-200 rounded-xl bg-gray-50/50">
                         <h3 class="text-md font-bold text-gray-800 mb-3 flex items-center gap-1.5">🗎 Bulk Import .docx Document</h3>
                         <label class="block text-xs font-semibold text-gray-500 mb-2">Upload Raw Statistics Questions Document (.docx)</label>
@@ -107,7 +107,7 @@
                         <div id="upload-status" class="mt-2 text-xs text-gray-600"></div>
                     </div>
 
-                    <!-- Task Part 2: Manual Question Addition UI -->
+                    <!-- Manual Question Form -->
                     <div class="p-5 border border-gray-200 rounded-xl bg-gray-50/50">
                         <h3 class="text-md font-bold text-gray-800 mb-3 flex items-center gap-1.5">➕ Add Question Manually</h3>
                         <div class="space-y-3">
@@ -145,7 +145,7 @@
                     </div>
                 </div>
 
-                <!-- Task Part 3: Live Audited Student Results Stream -->
+                <!-- Live Results Table -->
                 <div class="mb-8 border-t border-gray-100 pt-6">
                     <div class="flex items-center justify-between mb-4">
                         <h3 class="text-xl font-semibold text-gray-900 flex items-center gap-1.5">📊 Live Audited Student Results Stream</h3>
@@ -158,7 +158,7 @@
                     </div>
                 </div>
 
-                <!-- Live Question Bank View Dashboard -->
+                <!-- Question Bank Directory -->
                 <div class="border-t border-gray-200 pt-8">
                     <div class="sm:flex sm:items-center sm:justify-between mb-6">
                         <div>
@@ -222,9 +222,7 @@
                 });
         }
 
-        // ============================================== //
-        // TASK IMPLEMENTATION: LIVE RESULTS CONTROLLER    //
-        // ============================================== //
+        // Live Results Controller
         function fetchStudentResults() {
             const container = document.getElementById('student-results-container');
             container.innerHTML = `<div class="text-center py-6 text-gray-500 text-sm">⏳ Querying database sheet registry stream...</div>`;
@@ -281,9 +279,7 @@
                 });
         }
 
-        // ========================================== //
-        // STUDENT INTERFACE CONTROLLER SYSTEM LOOPS  //
-        // ========================================== //
+        // Student Interface Loop
         function startStudentQuiz() {
             const nameInp = document.getElementById('student-name').value.trim();
             const classInp = document.getElementById('student-class').value.trim();
@@ -478,9 +474,7 @@
             });
         }
 
-        // ========================================== //
-        // ACCESS CONTROL VIEW SWITCH HANDLERS        //
-        // ========================================== //
+        // View Transition
         function toggleAdminAccess() {
             if (isAdminAuthenticated) {
                 isAdminAuthenticated = false;
@@ -502,9 +496,7 @@
             }
         }
 
-        // ========================================== //
-        // CORE RE-ENGINEERED DOCX FILE TEXT PARSER  //
-        // ========================================== //
+        // Helper Functions & Parser Engine
         function fixMathNotation(htmlText) {
             if (!htmlText) return "";
             let clean = htmlText.replace(/\\\s*\(/g, '$').replace(/\\\s*\)/g, '$');
@@ -548,7 +540,7 @@
             reader.readAsArrayBuffer(file);
         });
 
-        // RE-ENGINEERED: Robust Sequential Option Matcher Engine
+        // Robust Sequential Option Matcher Engine
         function parseAndProcess(htmlContent) {
             const status = document.getElementById('upload-status');
             const tempDiv = document.createElement('div');
@@ -563,7 +555,7 @@
                 let plainText = p.innerText.trim();
                 if (!plainText) return;
 
-                // Match numbered question lines like: "1. What is the standard..."
+                // Match numbered question lines
                 const questionMatch = plainText.match(/^(\d+)\.\s*(.*)/);
 
                 if (questionMatch) {
@@ -580,19 +572,19 @@
                     };
                 }
                 else if (currentQ) {
-                    // Check logic based on sequentially expected choice identifiers: a, b, c, d
+                    // Sequentially expect choice identifiers: a, b, c, d
                     const optionExpects = ['a', 'b', 'c', 'd'];
                     const nextIndexNeeded = currentQ.options.length;
                     const nextLetterNeeded = optionExpects[nextIndexNeeded];
 
-                    // Strict Option RegEx: must start with (a), (A), a. or A. with tracking space
+                    // Strict Option RegEx: must start with (a), (A), a. or A. with trailing space
                     const optionPattern = /^(\(([a-dA-D])\)|([a-dA-D])\.)\s+(.*)/;
                     const optionMatch = plainText.match(optionPattern);
 
                     if (optionMatch && nextIndexNeeded < 4) {
                         const parsedLetter = (optionMatch[2] || optionMatch[3]).toLowerCase();
                         
-                        // Verify matched character meets correct sequential expectation
+                        // Verify matched character meets the sequential expectation
                         if (parsedLetter === nextLetterNeeded) {
                             let isAnswer = innerHtml.includes('[ANS]') || plainText.includes('[ANS]');
                             let optionCleanHtml = innerHtml.replace(/\[ANS\]/gi, '').trim();
@@ -602,7 +594,7 @@
                             if (isAnswer) {
                                 currentQ.answer = nextIndexNeeded;
                             }
-                            return; // Handled correctly, do not append to math question string
+                            return; // Skip appending as question body
                         }
                     }
 
@@ -626,9 +618,7 @@
             }
         }
 
-        // ============================================== //
-        // TASK IMPLEMENTATION: MANUAL ADD QUESTION LOGIC //
-        // ============================================== //
+        // Manual Question Implementation
         function addManualQuestion() {
             const numVal = document.getElementById('manual-q-num').value.trim();
             const textVal = document.getElementById('manual-q-text').value.trim();
@@ -660,7 +650,7 @@
             renderAdminQuestions();
             saveToCloud('saveQuestions', allQuestions);
 
-            // Clean inputs & Auto-increment question number to make manual loading fast
+            // Clear forms & Auto-increment question number to make continuous manual loading fast
             document.getElementById('manual-q-num').value = isNaN(numVal) ? "" : parseInt(numVal, 10) + 1;
             document.getElementById('manual-q-text').value = "";
             document.getElementById('manual-opt-a').value = "";
@@ -671,9 +661,6 @@
             alert(`Manual Question #${numVal} appended successfully! Synchronized with the Spreadsheet backend.`);
         }
 
-        // ========================================== //
-        // ADMINISTRATIVE REPOSITORY CARD BUILDERS    //
-        // ========================================== //
         function renderAdminQuestions() {
             const listContainer = document.getElementById('admin-questions-list');
             if (!allQuestions || allQuestions.length === 0) {
@@ -817,7 +804,7 @@
         }
 
         function saveToCloud(actionType, dataPayload) {
-            if (!BACKEND_URL || BACKEND_URL.includes("https://script.google.com/macros/s/AKfycbyDskOI3KQnjDrL6lGkxdM-UJyu3JuKO-hanDLosBzvP0J5f-zk2lEoQLi9Aj_QR_sGYQ/exec")) return;
+            if (!BACKEND_URL || BACKEND_URL.includes("YOUR_NEW_APPS_SCRIPT_URL_HERE")) return;
 
             fetch(BACKEND_URL, {
                 method: 'POST',
